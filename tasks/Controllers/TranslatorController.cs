@@ -31,14 +31,15 @@ namespace tasks.Controllers
         [HttpPost]
         public async Task<IActionResult> Translate(TranslatorViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Index", model);
+            }
+
             HttpContext.Session.SetString("SourceLanguage", model.SourceLanguage);
             HttpContext.Session.SetString("TargetLanguage", model.TargetLanguage);
             HttpContext.Session.SetString("Text", model.Text ?? "");
 
-            if (string.IsNullOrWhiteSpace(model.Text))
-            {
-                return View("Index", model);
-            }
             var key = _configuration["AzureTranslator:Key"];
             var endpoint = _configuration["AzureTranslator:Endpoint"];
             var region = _configuration["AzureTranslator:Region"];
@@ -80,5 +81,6 @@ namespace tasks.Controllers
 
             return View("Index", model);
         }
+
     }
 }

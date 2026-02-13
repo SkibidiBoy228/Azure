@@ -8,7 +8,7 @@
                 <h2 class="text-center mb-4">🌍 Azure Translator</h2>
 
                 <form asp-action="Translate" method="post">
-
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                     <div class="row mb-3">
                         <div class="col">
                             <label class="form-label">Мова оригіналу</label>
@@ -32,6 +32,7 @@
                     <div class="mb-3">
                         <label class="form-label">Введіть текст</label>
                         <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Text" class="text-danger"></span>
                     </div>
 
                     <div class="d-grid mb-3">
