@@ -82,5 +82,28 @@ namespace tasks.Controllers
             return View("Index", model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Swap(TranslatorViewModel model)
+        {
+
+            var temp = model.SourceLanguage;
+            model.SourceLanguage = model.TargetLanguage;
+            model.TargetLanguage = temp;
+
+
+            if (string.IsNullOrWhiteSpace(model.TranslatedText))
+            {
+                ModelState.Clear();
+                return View("Index", model);
+            }
+
+            model.Text = model.TranslatedText;
+            model.TranslatedText = null;
+
+            ModelState.Clear();
+
+            return await Translate(model);
+        }
+
     }
 }
