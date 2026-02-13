@@ -1,0 +1,21 @@
+﻿@model TranslatorViewModel
+
+<h2>Перекладач</h2>
+
+<form asp-action="Index" method="post">
+    <div>
+        <label>Введіть текст:</label>
+        <input asp-for="Text" class="form-control" />
+        <span asp-validation-for="Text" style="color:red"></span>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary">Перекласти</button>
+</form>
+
+@if (Model?.Result != null)
+{
+    <hr />
+    <h3>Результат:</h3>
+    <p>@Model.Result</p>
+}
