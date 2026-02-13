@@ -11,6 +11,9 @@ namespace tasks.Models
         public string SourceLanguage { get; set; } = "uk";
         public string TargetLanguage { get; set; } = "en";
 
+        public string? SourceTransliterationText { get; set; }
+        public string? TargetTransliterationText { get; set; }
+
         public string? TranslatedText { get; set; }
         public string? TransliterationText { get; set; }
     }

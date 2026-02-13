@@ -29,7 +29,6 @@ namespace tasks.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> Translate(TranslatorViewModel model)
         {
             if (!ModelState.IsValid)
@@ -74,26 +73,33 @@ namespace tasks.Controllers
 
             var result = await response.Content.ReadAsStringAsync();
 
-            ViewBag.RawJson = result;
-
             using var doc = JsonDocument.Parse(result);
 
-            var translation = doc.RootElement[0]
-                                 .GetProperty("translations")[0];
+            var root = doc.RootElement[0];
+            var translation = root
+                .GetProperty("translations")[0];
 
             model.TranslatedText = translation
-                                   .GetProperty("text")
-                                   .GetString();
+                .GetProperty("text")
+                .GetString();
 
             if (translation.TryGetProperty("transliteration", out var transliteration))
             {
-                model.TransliterationText = transliteration
-                                            .GetProperty("text")
-                                            .GetString();
+                model.TargetTransliterationText = transliteration
+                    .GetProperty("text")
+                    .GetString();
+            }
+            if (root.TryGetProperty("sourceText", out var sourceText) &&
+                sourceText.TryGetProperty("transliteration", out var sourceTranslit))
+            {
+                model.SourceTransliterationText = sourceTranslit
+                    .GetProperty("text")
+                    .GetString();
             }
 
             return View("Index", model);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Swap(TranslatorViewModel model)

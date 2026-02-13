@@ -47,7 +47,15 @@
                         <label class="form-label">Введіть текст</label>
                         <textarea asp-for="Text" class="form-control" rows="5"></textarea>
                         <span asp-validation-for="Text" class="text-danger"></span>
+
+                        @if (Model.SourceTransliterationText != null)
+                        {
+                            <div class="text-muted small mt-1">
+                                @Model.SourceTransliterationText
+                            </div>
+                        }
                     </div>
+
 
                     <div class="d-grid mb-3">
                         <button type="submit" class="btn btn-primary btn-lg">
@@ -60,8 +68,16 @@
                         <div class="mb-3">
                             <label class="form-label">Результат перекладу</label>
                             <textarea class="form-control" rows="5" readonly>@Model.TranslatedText</textarea>
+
+                            @if (Model.TargetTransliterationText != null)
+                            {
+                                <div class="text-muted small mt-1">
+                                    @Model.TargetTransliterationText
+                                </div>
+                            }
                         </div>
                     }
+
 
                     @if (Model.TransliterationText != null)
                     {
