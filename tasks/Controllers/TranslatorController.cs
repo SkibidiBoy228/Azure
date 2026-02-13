@@ -39,10 +39,15 @@ namespace tasks.Controllers
             {
                 return View("Index", model);
             }
-
             var key = _configuration["AzureTranslator:Key"];
             var endpoint = _configuration["AzureTranslator:Endpoint"];
             var region = _configuration["AzureTranslator:Region"];
+
+            if (string.IsNullOrEmpty(key))
+            {
+                model.TranslatedText = "Ошибка: не найден ключ Azure Translator (переменная окружения AZURE_TRANSLATOR_KEY)";
+                return View("Index", model);
+            }
 
             var route = $"/translate?api-version=3.0&from={model.SourceLanguage}&to={model.TargetLanguage}";
             var url = endpoint + route;

@@ -1,5 +1,8 @@
 ﻿var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration["AzureTranslator:Key"] =
+    Environment.GetEnvironmentVariable("AZURE_TRANSLATOR_KEY");
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddDistributedMemoryCache();
