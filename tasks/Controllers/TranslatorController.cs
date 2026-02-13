@@ -29,6 +29,7 @@ namespace tasks.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Translate(TranslatorViewModel model)
         {
             if (!ModelState.IsValid)
@@ -46,11 +47,11 @@ namespace tasks.Controllers
 
             if (string.IsNullOrEmpty(key))
             {
-                model.TranslatedText = "Ошибка: не найден ключ Azure Translator (переменная окружения AZURE_TRANSLATOR_KEY)";
+                model.TranslatedText = "Ошибка: не найден ключ Azure Translator";
                 return View("Index", model);
             }
 
-            var route = $"/translate?api-version=3.0&from={model.SourceLanguage}&to={model.TargetLanguage}";
+            var route = $"/translate?api-version=3.0&from={model.SourceLanguage}&to={model.TargetLanguage}&toScript=Latn";
             var url = endpoint + route;
 
             var body = new object[] { new { Text = model.Text } };
@@ -73,11 +74,23 @@ namespace tasks.Controllers
 
             var result = await response.Content.ReadAsStringAsync();
 
+            ViewBag.RawJson = result;
+
             using var doc = JsonDocument.Parse(result);
-            model.TranslatedText = doc.RootElement[0]
-                                      .GetProperty("translations")[0]
-                                      .GetProperty("text")
-                                      .GetString();
+
+            var translation = doc.RootElement[0]
+                                 .GetProperty("translations")[0];
+
+            model.TranslatedText = translation
+                                   .GetProperty("text")
+                                   .GetString();
+
+            if (translation.TryGetProperty("transliteration", out var transliteration))
+            {
+                model.TransliterationText = transliteration
+                                            .GetProperty("text")
+                                            .GetString();
+            }
 
             return View("Index", model);
         }

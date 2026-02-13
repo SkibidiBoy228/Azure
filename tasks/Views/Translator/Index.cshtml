@@ -9,8 +9,8 @@
 
                 <form asp-action="Translate" method="post">
 
-
                     <input type="hidden" asp-for="TranslatedText" />
+                    <input type="hidden" asp-for="TransliterationText" />
 
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -58,8 +58,16 @@
                     @if (Model.TranslatedText != null)
                     {
                         <div class="mb-3">
-                            <label class="form-label">Результат</label>
+                            <label class="form-label">Результат перекладу</label>
                             <textarea class="form-control" rows="5" readonly>@Model.TranslatedText</textarea>
+                        </div>
+                    }
+
+                    @if (Model.TransliterationText != null)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Транслітерація</label>
+                            <textarea class="form-control" rows="3" readonly>@Model.TransliterationText</textarea>
                         </div>
                     }
 
@@ -73,4 +81,13 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    @if (ViewBag.RawJson != null)
+    {
+        <script>
+            console.log("=== JSON от Azure ===");
+            console.log(@Html.Raw(Json.Serialize(ViewBag.RawJson)));
+            console.log("=====================");
+        </script>
+    }
 }
