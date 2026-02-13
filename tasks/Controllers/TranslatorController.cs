@@ -46,7 +46,7 @@ namespace tasks.Controllers
 
             if (string.IsNullOrEmpty(key))
             {
-                model.TranslatedText = "Ошибка: не найден ключ Azure Translator";
+                model.TranslatedText = "Сервіс перекладу тимчасово недоступний";
                 return View("Index", model);
             }
 
@@ -67,19 +67,26 @@ namespace tasks.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                model.TranslatedText = "Ошибка перевода: " + response.StatusCode;
+                if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 600)
+                {
+                    model.TranslatedText = "Сервіс перекладу тимчасово недоступний";
+                }
+                else
+                {
+                    model.TranslatedText = "Помилка перекладу";
+                }
+
                 return View("Index", model);
             }
 
             var result = await response.Content.ReadAsStringAsync();
 
             using var doc = JsonDocument.Parse(result);
-
             var root = doc.RootElement[0];
-            var translation = root
-                .GetProperty("translations")[0];
 
-            model.TranslatedText = translation
+            var translation = root.GetProperty("translations")[0];
+
+            var translatedText = translation
                 .GetProperty("text")
                 .GetString();
 
@@ -89,6 +96,7 @@ namespace tasks.Controllers
                     .GetProperty("text")
                     .GetString();
             }
+
             if (root.TryGetProperty("sourceText", out var sourceText) &&
                 sourceText.TryGetProperty("transliteration", out var sourceTranslit))
             {
@@ -96,9 +104,20 @@ namespace tasks.Controllers
                     .GetProperty("text")
                     .GetString();
             }
+            var source = model.Text ?? "";
+
+            if (source.Length > 40)
+            {
+                model.TranslatedText = $"[{source}\n{translatedText}]";
+            }
+            else
+            {
+                model.TranslatedText = $"[{source} - {translatedText}]";
+            }
 
             return View("Index", model);
         }
+
 
 
         [HttpPost]
