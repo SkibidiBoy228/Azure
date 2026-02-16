@@ -1,0 +1,20 @@
+﻿@model List<tasks.Models.Message>
+
+<h2>Дані з бази даних</h2>
+
+<table class="table">
+    <tr>
+        <th>ID</th>
+        <th>Text</th>
+        <th>Date</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Text</td>
+            <td>@item.CreatedAt</td>
+        </tr>
+    }
+</table>

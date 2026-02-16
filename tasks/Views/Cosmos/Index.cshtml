@@ -1,0 +1,23 @@
+﻿@model List<tasks.Models.CosmosMessage>
+
+<h2>Cosmos Page</h2>
+
+<form asp-controller="Cosmos" asp-action="Index" method="get">
+
+    <select name="selectedGroups" multiple size="10" style="width:400px;">
+
+        @if (ViewBag.Groups != null)
+        {
+            foreach (Guid group in (List<Guid>)ViewBag.Groups)
+            {
+                <option value="@group">@group</option>
+            }
+        }
+
+    </select>
+
+    <br /><br />
+
+    <button type="submit">Load</button>
+
+</form>

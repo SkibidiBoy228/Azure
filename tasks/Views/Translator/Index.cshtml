@@ -1,0 +1,120 @@
+﻿@model tasks.Models.TranslatorViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">🌍 Azure Translator</h2>
+                <div class="d-grid mb-4">
+                    <a href="/Database" class="btn btn-outline-dark">
+                        🗄 Перейти до бази даних
+                    </a>
+                </div>
+                <div class="d-grid mb-4">
+                    <a href="/Cosmos" class="btn btn-outline-dark">
+                        🗄 Перейти до Cosmos
+                    </a>
+                </div>
+
+
+                <form asp-action="Translate" method="post">
+
+                    <input type="hidden" asp-for="TranslatedText" />
+                    <input type="hidden" asp-for="TransliterationText" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">Мова оригіналу</label>
+                            <select asp-for="SourceLanguage" class="form-select" name="SourceLanguage">
+                                <option value="uk">Українська</option>
+                                <option value="en">English</option>
+                                <option value="de">Deutsch</option>
+                            </select>
+                        </div>
+
+                        <div class="col">
+                            <label class="form-label">Мова перекладу</label>
+                            <select asp-for="TargetLanguage" class="form-select" name="TargetLanguage">
+                                <option value="en">English</option>
+                                <option value="uk">Українська</option>
+                                <option value="de">Deutsch</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit"
+                                formaction="/Translator/Swap"
+                                formmethod="post"
+                                class="btn btn-secondary">
+                            ⇄ Змінити
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Введіть текст</label>
+                        <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Text" class="text-danger"></span>
+
+                        @if (Model.SourceTransliterationText != null)
+                        {
+                            <div class="text-muted small mt-1">
+                                @Model.SourceTransliterationText
+                            </div>
+                        }
+                    </div>
+
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            🔄 Перекласти
+                        </button>
+                    </div>
+
+                    @if (Model.TranslatedText != null)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Результат перекладу</label>
+                            <textarea class="form-control" rows="5" readonly>@Model.TranslatedText</textarea>
+
+                            @if (Model.TargetTransliterationText != null)
+                            {
+                                <div class="text-muted small mt-1">
+                                    @Model.TargetTransliterationText
+                                </div>
+                            }
+                        </div>
+                    }
+
+
+                    @if (Model.TransliterationText != null)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Транслітерація</label>
+                            <textarea class="form-control" rows="3" readonly>@Model.TransliterationText</textarea>
+                        </div>
+                    }
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    @if (ViewBag.RawJson != null)
+    {
+        <script>
+            console.log("=== JSON от Azure ===");
+            console.log(@Html.Raw(Json.Serialize(ViewBag.RawJson)));
+            console.log("=====================");
+        </script>
+    }
+}
